@@ -16,8 +16,6 @@ import java.util.logging.Logger;
  */
 public final class MVar<T> {
 
-    private static final Logger LOGGER = Logger.getLogger(MVar.class.getName());
-
     /**
      * The value which can be set by different threads.
      */
@@ -43,15 +41,15 @@ public final class MVar<T> {
      * Notifies waiting reader-Threads of the newly set value.
      * 
      * @param value The value to become the content of this container.
+     * @throws java.lang.InterruptedException if any thread interrupted the 
+     * current thread before or while the current thread was waiting for a 
+     * notification. The interrupted status of the current thread is cleared 
+     * when this exception is thrown
      */
-    public void put(T value) {
+    public void put(T value) throws InterruptedException {
         synchronized (writerLock) {
             while(!isEmpty()) {
-                try {
-                    writerLock.wait();
-                } catch (InterruptedException ex) {
-                    LOGGER.log(Level.SEVERE, null, ex);
-                }
+                writerLock.wait();
             }
 
             synchronized (readerLock) {
@@ -66,15 +64,15 @@ public final class MVar<T> {
      * to NULL. If there is no value, this method waits for one to be set.
      * 
      * @return The current value.
+     * @throws java.lang.InterruptedException if any thread interrupted the 
+     * current thread before or while the current thread was waiting for a 
+     * notification. The interrupted status of the current thread is cleared 
+     * when this exception is thrown
      */
-    public T take() {
+    public T take() throws InterruptedException {
         synchronized (readerLock) {
             while (isEmpty()) {
-                try {
-                    readerLock.wait();
-                } catch (InterruptedException ex) {
-                    LOGGER.log(Level.SEVERE, null, ex);
-                }
+                readerLock.wait();
             }
 
             synchronized (writerLock) {

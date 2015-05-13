@@ -85,6 +85,22 @@ public final class MVar<T> {
     }
 
     /**
+     * Reads the current value without resetting it.
+     * 
+     * @return The current value.
+     */
+    public T read() throws InterruptedException {
+        synchronized (readerLock) {
+            while (isEmpty()) {
+                readerLock.wait();
+            }
+
+            readerLock.notify();
+            return value;
+        }
+    }
+
+    /**
      * Will overwrite the value currently held in this instance, without
      * blocking. Afterwards a reader will be notified to read the written
      * value.

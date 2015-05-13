@@ -62,6 +62,28 @@ public final class Channel<T> {
         end.put(newItem);
     }
 
+    /**
+     * Tests, whether the current instance is empty.
+     * 
+     * @return True, if it is empty, false otherwise.
+     * @throws java.lang.InterruptedException
+     */
+    public boolean isEmpty() throws InterruptedException {
+        return start.read().equals(end.read());
+    }
+
+    /**
+     * Adds a new item add the beginning of this Channel.
+     * 
+     * @param o The value of the newly created item.
+     * @throws InterruptedException 
+     */
+    public void unGet(T o) throws InterruptedException {
+        MVar<Item<T>> newItem = MVar.empty();
+        MVar<Item<T>> firstItem = start.take();
+        newItem.put(new Item<>(o, firstItem));
+        start.put(newItem);
+    }
 
     /**
      * An item, that is used for storing a value in this Channel.

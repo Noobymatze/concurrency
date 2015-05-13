@@ -85,6 +85,20 @@ public final class MVar<T> {
     }
 
     /**
+     * Will overwrite the value currently held in this instance, without
+     * blocking. Afterwards a reader will be notified to read the written
+     * value.
+     * 
+     * @param value The value to be set as new value.
+     */
+    public void overWrite(T value) {
+        synchronized (writerLock) {
+            this.value = value;
+            readerLock.notify();
+        }
+    }
+
+    /**
      * Checks whether the current instance contains a non-empty value.
      * 
      * @return True, if the current value is NULL, false otherwise.

@@ -75,6 +75,8 @@ public final class Channel<T> {
     /**
      * Adds a new item add the beginning of this Channel.
      * 
+     * ist kaputt, kann behoben werden durch einen weiteren
+     * unget Pointer.
      * @param o The value of the newly created item.
      * @throws InterruptedException 
      */

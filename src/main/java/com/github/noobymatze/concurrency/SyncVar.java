@@ -24,7 +24,7 @@ public final class SyncVar<T> {
                 }
 
                 this.value = value;
-                readerLock.notify();
+                this.notify();
                 writer = false;
             }
         }
